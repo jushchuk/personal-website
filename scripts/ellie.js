@@ -94,7 +94,7 @@ class ImageGrid {
 		page = 1;
  
 		// parameters of request
-		let APIKey = "2913992-c926292594f754c09b7f796ad",
+		let APIKey = "REDACTED",
 		query = "castle",
 		minWidth = 270,
 		minHeight = 180,
