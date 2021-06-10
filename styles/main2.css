@@ -1,0 +1,13 @@
+body,p{text-align:left;text-indent:0;margin:40px auto;max-width:1000px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}
+h1,h2,h3{text-align:center; font-weight:bold; border-top:1px dashed #666; margin-top:10px;padding-top:10px; line-height:1.2}
+p.version{text-align:center;font-style:italic;}
+.idnumber{font-weight:normal;}
+span.ecp{font-style:italic;}
+ol{list-style-type: upper-alpha;}
+.cardref{font-style:normal;}
+#search{text-align: center;}
+#intro p{text-indent:1em;}
+p{background-color:transparent;}
+h3 > a{padding-top:15px;}
+ul.side_by_side_ul {list-style-type:none; display:inline-block;}
+#floating_button {position:fixed;bottom:20px;right:30px;background-color:white; color:rgba(102, 102, 102, 0.50); border:2px solid rgba(102, 102, 102, 0.50); /* Remove borders */ padding:15px; /* Some padding */ border-radius:50%; width:20px; height:20px; text-align:center;}
