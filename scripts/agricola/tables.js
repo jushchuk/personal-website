@@ -1,8 +1,7 @@
 //primary data
-var tables = [];
-var games = [];
+var TABLES = [];
+var GAMES = [];
 var state = 'tables';
-var sortedFilteredGames = [];
 //helper var
 var allPlayers = [];
 var allWinners = ['Any'];
@@ -11,7 +10,7 @@ var sortedPlayerCounts = [];
 const thresholdTypes = ['Winner\'s', 'Average', 'Margin'];
 const thresholdComparisons = ['>', '<', '='];
 const sortTypes = ['Game','Score','Average','Margin'];
-const sortOrders = ['ascending', 'descending'];
+const sortOrders = ['descending', 'ascending'];
 const dataURL = 'https://raw.githubusercontent.com/jushchuk/agricola/master/data/gric-refined.csv';
 
 loadFile(dataURL, populateTablesPage);
@@ -23,16 +22,15 @@ setTimeout(function(){
 //main functions instantiating variables and html
 function populateTablesPage() {
     let data = parseCSV(this.responseText);
-    games = parseDataToGames(data);
-
+    GAMES = parseDataToGames(data);
     let playerCounts = {};
 
-    for (let i = 0; i < games.length; i++) {
-        let gameNumber = games[i][0]['Game'];
+    for (let i = 0; i < GAMES.length; i++) {
+        let gameNumber = GAMES[i][0]['Game'];
         let gamePlayers = [];
-        for (let j = 0; j < games[i].length; j++) {
+        for (let j = 0; j < GAMES[i].length; j++) {
             //determine who are the players for a particular game
-            let player = games[i][j]['Name'];
+            let player = GAMES[i][j]['Name'];
             gamePlayers.push(player);
             
             //this is to help later know who are all possible players
@@ -43,16 +41,16 @@ function populateTablesPage() {
                 playerCounts[player] += 1;
             }
 
-            if (games[i][j]['Winner'] == 'True' && !allWinners.includes(player)) {
+            if (GAMES[i][j]['Winner'] == 'True' && !allWinners.includes(player)) {
                 allWinners.push(player);
             }
         }
 
         //create the actual html table
-        let table = createTable(games[i],'Game '+gameNumber);
+        let table = createTable(GAMES[i],'Game '+gameNumber);
         
         //push this table with some info to potentially use later
-        tables.push({'game':gameNumber, 'players':gamePlayers, 'table':table, 'gameData':games[i]});
+        TABLES.push({'game':gameNumber, 'players':gamePlayers, 'table':table, 'gameData':GAMES[i]});
     }
 
     //sort all possible players by their game count
@@ -65,8 +63,7 @@ function populateTablesPage() {
     });
 
     populateFilterTools();
-
-    displayContent(state, games);
+    submitFilter();
 }
 
 function populateFilterTools() {
@@ -182,7 +179,7 @@ function populateFilterTools() {
     //count span
     let filterTableCount = document.createElement('span');
     filterTableCount.id = 'table_count_span';
-    filterTableCount.textContent = 'Showing all ' + games.length + ' tables';
+    filterTableCount.textContent = 'Showing all ' + GAMES.length + ' tables';
     
     //append it all
     playerFilterDiv.append(playerSelectLabel);
@@ -207,49 +204,89 @@ function populateFilterTools() {
 
 }
 
-function displayContent(state, visibleGames) {
+function displayContent(state, selectedGames) {
     switch (state) {
         case 'tables':
-            displayTables(visibleGames)
+            displayTables(selectedGames)
             break;
         case 'graphs':
-            displayGraphs();
+            displayGraphs(selectedGames);
+            break;
+        case 'streaks':
+            displayStreaks(selectedGames);
             break;
     }
 }
 
-function displayGraphs() {
+function displayGraphs(selectedGames) {
     let tablesContainer = document.getElementById('tables_container');
     tablesContainer.innerHTML = '';
     tablesContainer.append("hello graphs");
 }
 
-function displayTables(visibleGames) {
-   // if (sorting == null) {
-    //    sorting = {'type':'default','order':'ascending'};
-    //}
+function displayStreaks(selectedGames) {
+    let streaks = calculateStreaks(selectedGames);
+    let streakString = '';
+    for (const player in streaks) {
+        streakString += player+': ';
 
-    let sortingType = document.getElementById('sort_type_select').selectedOptions[0].value;
-    let sortingOrder = document.getElementById('sort_order_select').selectedOptions[0].value;
-    let sorting = {'type': sortingType, 'order': sortingOrder};
+        for (let i = 0; i < streaks[player].length; i++) {
+            streakString += streaks[player][i]+', ';
+        }
+        streakString += '<br>';
+    }
+    
+    console.log(streaks);
 
+    let tablesContainer = document.getElementById('tables_container');
+    tablesContainer.innerHTML = streakString;
+}
+
+function calculateStreaks(selectedGames) {
+    let streaks = {};
+    for (let i = 0; i < selectedGames.length; i++) {
+        for (let j = 0; j < selectedGames[i].length; j++) {
+            let player = selectedGames[i][j]['Name'];
+            let result = (selectedGames[i][j]['Winner'] == "True" ? 1 : -1);
+
+            if (!(player in streaks)) {
+                streaks[player] = [result];
+            } else {
+                let currentStreak = streaks[player].pop();
+                if (Math.sign(currentStreak) == Math.sign(result)) {
+                    //keep streak going
+                    streaks[player].push(currentStreak + result);
+                } else {
+                    //streak broken, need to start new streak
+                    streaks[player].push(currentStreak);//+' ('+selectedGames[i][j]['Game']+')');
+                    streaks[player].push(result);
+                }
+            }
+        }
+    }
+
+    return streaks;
+}
+
+function displayTables(selectedGames) {
     let tablesContainer = document.getElementById('tables_container');
     tablesContainer.innerHTML = '';
     
-    for (let i = 0; i < visibleGames.length; i++) {
-        let gameNumber = parseInt(visibleGames[i][0]['Game']);
+    for (let i = 0; i < selectedGames.length; i++) {
+        let gameNumber = parseInt(selectedGames[i][0]['Game']);
         
-        let table = tables[gameNumber-1].table;
+        let table = TABLES[gameNumber-1].table;
         
         let div = wrapWithDiv(table, 'game'+gameNumber, 'table_div');
         tablesContainer.append(div);    
     }
 
-    let visibleCount = visibleGames.length;
-    if (visibleCount == games.length) {
-        document.getElementById('table_count_span').textContent = 'Showing all ' + visibleCount + ' tables';
+    let selectedCount = selectedGames.length;
+    //TODO: refactor out so that it updates on switch without clicking submit
+    if (selectedCount == GAMES.length) {
+        document.getElementById('table_count_span').textContent = 'Showing all ' + selectedCount + ' tables';
     } else {
-        document.getElementById('table_count_span').textContent = 'Showing ' + visibleCount + ' tables';
+        document.getElementById('table_count_span').textContent = 'Showing ' + selectedCount + ' tables';
     }
 
 }
@@ -272,9 +309,9 @@ function submitFilter() {
     let sortingType = document.getElementById('sort_type_select').selectedOptions[0].value;
     let sortingOrder = document.getElementById('sort_order_select').selectedOptions[0].value;
     let sorting = {'type': sortingType, 'order': sortingOrder};
-    sortedFilteredGames = sortFilteredGames(filteredGames, sorting);
-    console.log(sortedFilteredGames);
-    displayContent(state, sortedFilteredGames);
+    let selectedGames = sortFilteredGames(filteredGames, sorting);
+    console.log(selectedGames);
+    displayContent(state, selectedGames);
 
     return false;
 }
@@ -284,25 +321,25 @@ function resetFilter() {
     document.getElementById('filter_form').reset();
 
     //display all games
-    displayContent(state, games);
+    displayContent(state, GAMES);
 
     //reset table count 
-    document.getElementById('table_count_span').textContent = 'Showing all ' + games.length + ' tables';
+    document.getElementById('table_count_span').textContent = 'Showing all ' + GAMES.length + ' tables';
 
     return false;
 }
 
 function filterGames(validPlayers, exactPlayersMatch, threshold, winner) {
     let filteredGames = [];
-    for (let i = 0; i < tables.length; i++) {
-        let game = tables[i].gameData;
+    for (let i = 0; i < TABLES.length; i++) {
+        let game = TABLES[i].gameData;
         let shouldKeep = true;
 
         //filter for players
         if (validPlayers.length > 0) {
             for (let j = 0; j < validPlayers.length; j++) {
-                let gamePlayerInValidPlayers = tables[i].players.includes(validPlayers[j].value);
-                let passesExact = (!exactPlayersMatch || tables[i].players.length == validPlayers.length);
+                let gamePlayerInValidPlayers = TABLES[i].players.includes(validPlayers[j].value);
+                let passesExact = (!exactPlayersMatch || TABLES[i].players.length == validPlayers.length);
                 if (!gamePlayerInValidPlayers || !passesExact) {
                     shouldKeep = false;
                 }
@@ -311,7 +348,7 @@ function filterGames(validPlayers, exactPlayersMatch, threshold, winner) {
         
         //filter for winner
         if (winner != 'Any') {
-            if (tables[i].players.includes(winner)) {
+            if (TABLES[i].players.includes(winner)) {
                 for (let j = 0; j < game.length; j++) {
                     if (game[j]['Name'] == winner && game[j]['Winner'] != 'True') {
                         shouldKeep = false;
@@ -457,5 +494,5 @@ function sortFilteredGames(filteredGames, sorting) {
 function changeState(newState) {
     state = newState;
     console.log(state);
-    displayContent(state,sortedFilteredGames)
+    submitFilter()
 }

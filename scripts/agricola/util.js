@@ -43,7 +43,7 @@ function parseDataToGames(data) {
         if (currentGame == data[i]['Game']) {
             game.push(data[i]);
         } else {
-            games.push(game);
+            games.unshift(game);
             currentGame = data[i]['Game'];
             game = [data[i]];
         }
