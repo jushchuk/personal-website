@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="../styles/agricola/styles.css">
     
-    <script type="text/javascript" src="../scripts/agricola/main.js"></script>
+    <script type="text/javascript" src="../scripts/agricola/util.js"></script>
     <script type="text/javascript" src="../scripts/agricola/tables.js"></script>
 </head>
 
@@ -20,7 +20,8 @@
     <header class="header">
         <ul class="navbar">
             <li><a href="../index.html">Home</a></li>
-            <li><a href="tables.html">Tables</a></li>
+            <li><a href="javascript:changeState('tables')">Tables</a></li>
+            <li><a href="javascript:changeState('graphs')">Graphs</a></li>
             <li><a href="compendium.html">Compendium</a></li>
         </ul>
     </header>
@@ -28,6 +29,7 @@
     <div id="table_filter" class="filter"></div>
     
     <div id="tables_container" class="content"></div> 
+    
     
    
 </body>

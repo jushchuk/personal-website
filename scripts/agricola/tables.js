@@ -1,7 +1,8 @@
 //primary data
 var tables = [];
 var games = [];
-
+var state = 'tables';
+var sortedFilteredGames = [];
 //helper var
 var allPlayers = [];
 var allWinners = ['Any'];
@@ -65,7 +66,7 @@ function populateTablesPage() {
 
     populateFilterTools();
 
-    displayFilteredGames(games);
+    displayContent(state, games);
 }
 
 function populateFilterTools() {
@@ -206,10 +207,31 @@ function populateFilterTools() {
 
 }
 
-function displayFilteredGames(visibleGames, sorting) {
-    if (sorting == null) {
-        sorting = {'type':'default','order':'ascending'};
+function displayContent(state, visibleGames) {
+    switch (state) {
+        case 'tables':
+            displayTables(visibleGames)
+            break;
+        case 'graphs':
+            displayGraphs();
+            break;
     }
+}
+
+function displayGraphs() {
+    let tablesContainer = document.getElementById('tables_container');
+    tablesContainer.innerHTML = '';
+    tablesContainer.append("hello graphs");
+}
+
+function displayTables(visibleGames) {
+   // if (sorting == null) {
+    //    sorting = {'type':'default','order':'ascending'};
+    //}
+
+    let sortingType = document.getElementById('sort_type_select').selectedOptions[0].value;
+    let sortingOrder = document.getElementById('sort_order_select').selectedOptions[0].value;
+    let sorting = {'type': sortingType, 'order': sortingOrder};
 
     let tablesContainer = document.getElementById('tables_container');
     tablesContainer.innerHTML = '';
@@ -250,9 +272,9 @@ function submitFilter() {
     let sortingType = document.getElementById('sort_type_select').selectedOptions[0].value;
     let sortingOrder = document.getElementById('sort_order_select').selectedOptions[0].value;
     let sorting = {'type': sortingType, 'order': sortingOrder};
-    let sortedFilteredGames = sortFilteredGames(filteredGames, sorting);
-
-    displayFilteredGames(sortedFilteredGames, sorting);
+    sortedFilteredGames = sortFilteredGames(filteredGames, sorting);
+    console.log(sortedFilteredGames);
+    displayContent(state, sortedFilteredGames);
 
     return false;
 }
@@ -262,7 +284,7 @@ function resetFilter() {
     document.getElementById('filter_form').reset();
 
     //display all games
-    displayFilteredGames(games);
+    displayContent(state, games);
 
     //reset table count 
     document.getElementById('table_count_span').textContent = 'Showing all ' + games.length + ' tables';
@@ -430,4 +452,10 @@ function sortFilteredGames(filteredGames, sorting) {
     }
 
     return filteredGames;
+}
+
+function changeState(newState) {
+    state = newState;
+    console.log(state);
+    displayContent(state,sortedFilteredGames)
 }

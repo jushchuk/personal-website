@@ -1,6 +1,5 @@
 function populateGraphs(){
     data = parseCSV(this.responseText);
-    console.log(data);
 }
 
 const dataURL = 'https://raw.githubusercontent.com/jushchuk/agricola/master/data/gric-refined.csv';
