@@ -219,27 +219,27 @@ function displayContent(state, selectedGames) {
 }
 
 function displayGraphs(selectedGames) {
-    let tablesContainer = document.getElementById('tables_container');
-    tablesContainer.innerHTML = '';
-    tablesContainer.append("hello graphs");
+    let graphsContainer = document.getElementById('content_container');
+    graphsContainer.innerHTML = '';
+    graphsContainer.append("hello graphs");
 }
 
 function displayStreaks(selectedGames) {
     let streaks = calculateStreaks(selectedGames);
     let streakString = '';
     for (const player in streaks) {
-        streakString += player+': ';
+        streakString += '<p>'+player+': ';
 
         for (let i = 0; i < streaks[player].length; i++) {
             streakString += streaks[player][i]+', ';
         }
-        streakString += '<br>';
+        streakString += '</p>';
     }
     
     console.log(streaks);
 
-    let tablesContainer = document.getElementById('tables_container');
-    tablesContainer.innerHTML = streakString;
+    let streaksContainer = document.getElementById('content_container');
+    streaksContainer.innerHTML = streakString;
 }
 
 function calculateStreaks(selectedGames) {
@@ -258,18 +258,35 @@ function calculateStreaks(selectedGames) {
                     streaks[player].push(currentStreak + result);
                 } else {
                     //streak broken, need to start new streak
-                    streaks[player].push(currentStreak);//+' ('+selectedGames[i][j]['Game']+')');
+                    if (Math.sign(currentStreak) == -1) {
+                        streaks[player].push('<span title="'+selectedGames[i][j]['Game']+'" class="losing_streak">'+currentStreak+'</span>');
+                    } else {
+                        streaks[player].push('<span title="'+selectedGames[i][j]['Game']+'" class="winning_streak">'+currentStreak+'</span>');
+                    }
+                    //streaks[player].push(currentStreak);//+' ('+selectedGames[i][j]['Game']+')');
                     streaks[player].push(result);
                 }
             }
         }
     }
 
+    //edge case: last streak has to be properly wrapped
+    //TODO add way to tooltip game for current streak
+    for (const player in streaks) {
+        let currentStreak = streaks[player].pop();
+        if (Math.sign(currentStreak) == -1) {
+            streaks[player].push('<span class="losing_streak">'+currentStreak+'</span>');
+        } else {
+            streaks[player].push('<span class="winning_streak">'+currentStreak+'</span>');
+        }
+    }
+
+
     return streaks;
 }
 
 function displayTables(selectedGames) {
-    let tablesContainer = document.getElementById('tables_container');
+    let tablesContainer = document.getElementById('content_container');
     tablesContainer.innerHTML = '';
     
     for (let i = 0; i < selectedGames.length; i++) {
@@ -492,7 +509,11 @@ function sortFilteredGames(filteredGames, sorting) {
 }
 
 function changeState(newState) {
+    let oldState = state;
     state = newState;
     console.log(state);
-    submitFilter()
+    let contentContainer = document.getElementById('content_container');
+    contentContainer.classList.remove(oldState+'_content');
+    contentContainer.classList.add(newState+'_content');
+    submitFilter();
 }

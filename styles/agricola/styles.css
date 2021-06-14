@@ -9,6 +9,15 @@ body {
     font-size: 16px;
 }
 
+/* Streaks */
+span.losing_streak {
+    color: #cc0000;
+}
+
+span.winning_streak {
+    color: #0000cc;
+}
+
 /* scoresheet table style */
 
 @media screen and (max-width: 375px) {
@@ -170,12 +179,19 @@ table.scoresheet tr td.winner  {
     background-color: #000102;
 }
 
-.content{
+.tables_content{
     display:flex;
     flex-flow: row wrap;
     justify-content: center;
 } 
 
+.graphs_content{
+
+} 
+
+.streaks_content{
+
+} 
 
 /* filter toolbar style */
 .filter span {
