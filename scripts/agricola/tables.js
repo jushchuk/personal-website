@@ -50,7 +50,8 @@ function populateTablesPage() {
         let table = createTable(GAMES[i],'Game '+gameNumber);
         
         //push this table with some info to potentially use later
-        TABLES.push({'game':gameNumber, 'players':gamePlayers, 'table':table, 'gameData':GAMES[i]});
+        //hack: using unshift to order the tables so that they are same order as games (default being most recent to oldest)
+        TABLES.unshift({'game':gameNumber, 'players':gamePlayers, 'table':table, 'gameData':GAMES[i]});
     }
 
     //sort all possible players by their game count
@@ -233,6 +234,7 @@ function displayStreaks(selectedGames) {
         for (let i = 0; i < streaks[player].length; i++) {
             streakString += streaks[player][i]+', ';
         }
+        streakString = streakString.substring(0, streakString.length - 2);
         streakString += '</p>';
     }
     
@@ -288,24 +290,15 @@ function calculateStreaks(selectedGames) {
 function displayTables(selectedGames) {
     let tablesContainer = document.getElementById('content_container');
     tablesContainer.innerHTML = '';
-    
+    console.log(TABLES);
     for (let i = 0; i < selectedGames.length; i++) {
         let gameNumber = parseInt(selectedGames[i][0]['Game']);
-        
+        console.log(gameNumber);
         let table = TABLES[gameNumber-1].table;
         
         let div = wrapWithDiv(table, 'game'+gameNumber, 'table_div');
         tablesContainer.append(div);    
     }
-
-    let selectedCount = selectedGames.length;
-    //TODO: refactor out so that it updates on switch without clicking submit
-    if (selectedCount == GAMES.length) {
-        document.getElementById('table_count_span').textContent = 'Showing all ' + selectedCount + ' tables';
-    } else {
-        document.getElementById('table_count_span').textContent = 'Showing ' + selectedCount + ' tables';
-    }
-
 }
 
 //main functions for page behavior
@@ -329,6 +322,13 @@ function submitFilter() {
     let selectedGames = sortFilteredGames(filteredGames, sorting);
     console.log(selectedGames);
     displayContent(state, selectedGames);
+
+    let selectedCount = selectedGames.length;
+    if (selectedCount == GAMES.length) {
+        document.getElementById('table_count_span').textContent = 'Showing all ' + selectedCount + ' tables';
+    } else {
+        document.getElementById('table_count_span').textContent = 'Showing ' + selectedCount + ' tables';
+    }
 
     return false;
 }

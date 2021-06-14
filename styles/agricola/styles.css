@@ -190,7 +190,7 @@ table.scoresheet tr td.winner  {
 } 
 
 .streaks_content{
-
+    margin: 10px;
 } 
 
 /* filter toolbar style */
@@ -208,7 +208,6 @@ table.scoresheet tr td.winner  {
 
     .content{
         z-index: -1;
-        width:100vw; 
         float: right;
         margin-top: 23vh;
     } 
