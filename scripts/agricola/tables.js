@@ -275,9 +275,9 @@ function calculateStreaks(selectedGames) {
     for (const player in streaks) {
         let currentStreak = streaks[player].pop();
         if (Math.sign(currentStreak) == -1) {
-            streaks[player].push('<span class="losing_streak">'+currentStreak+'</span>');
+            streaks[player].push('<span title="Active" class="losing_streak">'+currentStreak+'</span>');
         } else {
-            streaks[player].push('<span class="winning_streak">'+currentStreak+'</span>');
+            streaks[player].push('<span title="Active" class="winning_streak">'+currentStreak+'</span>');
         }
     }
 
