@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+	<meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;" />
+    <meta name="HandheldFriendly" content="True" />
+    
+    <title>Wattage Calculator</title>
+
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/watts-calc.css">
+
+    <script type="text/javascript" src="scripts/watt-calc.js"></script>
+</head>
+<body>
+    <div id="container">
+        <p>A <input id="watts_input" type="number" onInput="calculate(this.value);" autoFocus style="width: 30px;"> watt device will cost $1 after running for <span id="runtime" style="font-weight: bold;">? hours</span> at 10¢/kWh</p>  
+
+
+        <!--<p>A <input id="watts_input" type="number"> watt device will cost $<input id="cost_input" type="number"> after running for <input id="time_input" type="number"> hours at <input id="rate_input" type="number"> $/kwh</p> -->
+    </div>
+</body>
