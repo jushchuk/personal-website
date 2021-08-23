@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">             
+<head>
+	<meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;" />
+    <meta name="HandheldFriendly" content="True" />
+    
+    <title>Field Messenger Generator</title>
+
+    <link rel="stylesheet" href="../styles/agricola/fieldmessenger.css">
+    <script type="text/javascript" src="../scripts/agricola/fieldmessenger.js"></script>
+</head>
+<body>
+    <h1>Select used farmyard spaces then click submit!</h1>
+    <hr>
+
+    <div class="container">
+        <div id="1" onclick="toggle('1')"><img src="../images/field-tile.png"></div>
+        <div id="2" onclick="toggle('2')"><img src="../images/field-tile.png"></div>
+        <div id="3" onclick="toggle('3')"><img src="../images/field-tile.png"></div>
+        <div id="4" onclick="toggle('4')"><img src="../images/field-tile.png"></div>
+        <div id="5" onclick="toggle('5')"><img src="../images/field-tile.png"></div>
+        <div id="6"  class='selected'><img src="../images/room-tile.png"></div>
+        <div id="7" onclick="toggle('7')"><img src="../images/field-tile.png"></div>
+        <div id="8" onclick="toggle('8')"><img src="../images/field-tile.png"></div>
+        <div id="9" onclick="toggle('9')"><img src="../images/field-tile.png"></div>
+        <div id="10" onclick="toggle('10')"><img src="../images/field-tile.png"></div>
+        <div id="11" class='selected'><img src="../images/room-tile.png"></div>
+        <div id="12" onclick="toggle('12')"><img src="../images/field-tile.png"></div>
+        <div id="13" onclick="toggle('13')"><img src="../images/field-tile.png"></div>
+        <div id="14" onclick="toggle('14')"><img src="../images/field-tile.png"></div>
+        <div id="15" onclick="toggle('15')"><img src="../images/field-tile.png"></div>
+    </div>
+    <button onclick="submit()">Submit</button>
+    <button onclick="reset()">Reset</button>
+</body>
